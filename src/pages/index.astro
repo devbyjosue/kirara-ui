@@ -1,5 +1,8 @@
 ---
-
+// index.astro
+import "../styles/global.css";
+import SocialCard from "../components/SocialCard.astro";
+import { platforms } from "../data/platforms";
 ---
 
 <html lang="en">
@@ -9,9 +12,54 @@
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<title>Kirara - Free Media Downloader</title>
 	</head>
-	<body>
-		<h1>Astro</h1>
+	<body class="bg-[#F8F9FA] text-[#333333] font-sans min-h-screen flex flex-col">
+		<!-- Header -->
+		<header class="bg-white border-b border-gray-200">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+				<div class="flex items-center gap-2">
+					<div class="w-8 h-8 rounded bg-red-500 text-white flex items-center justify-center font-bold">
+						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+						</svg>
+					</div>
+					<span class="font-extrabold text-xl tracking-tight text-gray-900">Kirara</span>
+				</div>
+				<nav class="hidden md:flex gap-6 text-sm font-semibold text-gray-600">
+					<!-- <a href="#" class="hover:text-red-500 transition">Save Video</a>
+					<a href="#" class="hover:text-red-500 transition">Save Image</a> -->
+					<a href="#" class="hover:text-red-500 transition">Pricing</a>
+				</nav>
+			</div>
+		</header>
+
+		<main class="grow w-full py-16 md:py-24 text-center px-4 sm:px-6 lg:px-8">
+			<h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 mb-6 tracking-tight max-w-4xl mx-auto">
+				Every social media tool you need in one place
+			</h1>
+			<p class="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto mb-14 font-medium">
+				Our suite of download tools will help you save videos and images from any platform entirely for free. No registrations or limits.
+			</p>
+
+			<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+				{platforms.map((platform) => (
+					<SocialCard platform={platform} />
+				))}
+			</div>
+		</main>
+
+		<footer class="border-t border-gray-200 bg-white mt-auto">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row items-center justify-between">
+				<p class="text-gray-500 text-sm mb-4 md:mb-0">
+					© 2026 KiraDownloader. Fast, Secure, and Free.
+				</p>
+				<div class="flex space-x-6 text-sm">
+					<a href="#" class="text-gray-500 hover:text-gray-900 transition font-medium">Terms</a>
+					<a href="#" class="text-gray-500 hover:text-gray-900 transition font-medium">Privacy</a>
+					<a href="#" class="text-gray-500 hover:text-gray-900 transition font-medium">Contact</a>
+				</div>
+			</div>
+		</footer>
 	</body>
 </html>

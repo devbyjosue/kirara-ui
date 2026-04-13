@@ -1,0 +1,30 @@
+---
+export interface Props {
+  platform: {
+    id: string;
+    name: string;
+    shortName: string;
+    description: string;
+    url: string;
+    hoverBorder: string;
+    hoverBg: string;
+    textColor: string;
+    hoverText: string;
+    gradient: string;
+    svg: string;
+    colorBg: string;
+    colorText: string;
+  };
+}
+
+const { platform } = Astro.props;
+---
+
+<a href={platform.url} class={`group bg-white p-8 rounded-2xl shadow-sm border border-gray-200 hover:shadow-xl transition-all flex flex-col items-center text-center cursor-pointer relative overflow-hidden ${platform.hoverBorder}`}>
+  <div class={`absolute inset-0 opacity-0 group-hover:opacity-[0.02] transition-opacity ${platform.gradient}`}></div>
+  <div class={`w-16 h-16 mb-5 rounded-2xl flex justify-center items-center group-hover:text-white transition-all duration-300 ${platform.colorBg} ${platform.colorText} ${platform.hoverBg}`}>
+    <Fragment set:html={platform.svg} />
+  </div>
+  <h3 class={`font-bold text-lg text-gray-900 mb-2 transition-colors ${platform.hoverText}`}>{platform.name}</h3>
+  <p class="text-sm text-gray-500 leading-relaxed font-medium">{platform.description}</p>
+</a>

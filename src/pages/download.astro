@@ -1,0 +1,222 @@
+---
+// download.astro
+import "../styles/global.css";
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>TikTok Downloader - KiraDownloader</title>
+	</head>
+	<body class="bg-[#F8F9FA] text-[#333333] font-sans min-h-screen flex flex-col">
+		<!-- Header -->
+		<header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+				<a href="/" class="flex items-center gap-2 hover:opacity-80 transition cursor-pointer">
+					<div class="w-8 h-8 rounded bg-red-500 text-white flex items-center justify-center font-bold">
+						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+						</svg>
+					</div>
+					<span class="font-extrabold text-xl tracking-tight text-gray-900">KiraDownloader</span>
+				</a>
+				<nav class="hidden md:flex gap-6 text-sm font-semibold text-gray-600">
+					<a href="#" class="hover:text-red-500 transition">Save Video</a>
+					<a href="#" class="hover:text-red-500 transition">Save Image</a>
+					<a href="#" class="hover:text-red-500 transition">Pricing</a>
+				</nav>
+			</div>
+		</header>
+
+		<!-- Main Content -->
+		<main class="grow w-full py-12 md:py-20 px-4 sm:px-6 lg:px-8">
+			
+			<div class="text-center mb-10">
+				<div class="inline-flex justify-center items-center w-16 h-16 bg-black text-white rounded-2xl mb-4 shadow-md">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.01.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
+                    </svg>
+                </div>
+				<h1 class="text-3xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">TikTok Video Downloader</h1>
+				<p class="text-lg text-gray-500 max-w-2xl mx-auto font-medium">Download TikTok videos without watermark for free. Fast, HD quality.</p>
+			</div>
+
+			<!-- Downloader Tool Box -->
+			<div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl border border-gray-100 p-6 md:p-10 relative overflow-hidden">
+				
+				<!-- State 1: Input Form -->
+				<div id="input-state" class="transition-all duration-500">
+					<form id="download-form" class="flex flex-col md:flex-row gap-4 w-full relative">
+						<div class="relative flex-grow">
+							<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+								<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+								</svg>
+							</div>
+							<input 
+								type="url" 
+								id="url-input"
+								placeholder="Paste TikTok video link here..." 
+								required
+								class="block w-full pl-12 pr-24 py-5 text-lg rounded-xl border-2 border-gray-200 focus:border-red-500 focus:ring-0 focus:outline-none transition-colors bg-gray-50 text-gray-900 font-medium placeholder-gray-400"
+							>
+							<button type="button" class="absolute inset-y-2 right-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold rounded-lg transition-colors flex items-center gap-2 text-sm z-10">
+								<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+								Paste
+							</button>
+						</div>
+						<button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-10 py-5 rounded-xl text-lg font-bold shadow-lg shadow-red-200 transition flex items-center justify-center gap-2 group w-full md:w-auto flex-shrink-0">
+							<span>Download</span>
+							<svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+						</button>
+					</form>
+					<p class="text-sm text-gray-400 mt-4 text-center">By using our service you accept our Terms of Service.</p>
+				</div>
+
+				<!-- State 2: Loading (Hidden by default) -->
+				<div id="loading-state" class="hidden flex flex-col items-center justify-center py-12 transition-all duration-500">
+					<div class="relative w-24 h-24">
+						<svg class="animate-spin w-full h-full text-gray-200" viewBox="0 0 100 100">
+							<circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="8"></circle>
+						</svg>
+						<svg class="animate-spin w-full h-full text-red-500 absolute top-0 left-0" viewBox="0 0 100 100">
+							<circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="8" stroke-dasharray="283" stroke-dashoffset="210" stroke-linecap="round"></circle>
+						</svg>
+						<div class="absolute inset-0 flex items-center justify-center text-red-500">
+							<svg class="w-8 h-8 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+							</svg>
+						</div>
+					</div>
+					<h3 class="text-2xl font-bold text-gray-900 mt-6">Processing your link...</h3>
+					<p class="text-gray-500 mt-2 font-medium">Please wait, extracting media sources.</p>
+				</div>
+
+				<!-- State 3: Result (Hidden by default) -->
+				<div id="result-state" class="hidden animate-fade-in transition-all duration-500">
+					<div class="flex flex-col md:flex-row gap-8 bg-gray-50 p-6 rounded-2xl border border-gray-100">
+						<!-- Thumbnail Mock -->
+						<div class="w-full md:w-1/3 aspect-[9/16] md:aspect-square bg-gray-200 rounded-xl overflow-hidden relative shadow-inner">
+							<img src="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="Video Thumbnail" class="w-full h-full object-cover">
+							<div class="absolute inset-0 bg-black/20 flex items-center justify-center">
+								<div class="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center pl-1 shadow-lg cursor-pointer hover:scale-105 transition">
+									<svg class="w-6 h-6 text-black" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+								</div>
+							</div>
+						</div>
+
+						<!-- Actions -->
+						<div class="w-full md:w-2/3 flex flex-col justify-center">
+							<h3 class="text-xl font-bold text-gray-900 mb-2 truncate">Awesome video trend #viral #fyp</h3>
+							<p class="text-sm text-gray-500 mb-6 flex items-center gap-2">
+								<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+								Ready to download
+							</p>
+
+							<div class="space-y-3">
+								<button class="w-full bg-[#EA4335] hover:bg-[#d9382b] text-white font-bold py-4 px-6 rounded-xl flex items-center justify-between transition group shadow-md shadow-red-100">
+									<div class="flex items-center gap-3">
+										<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+										<span>Download Video (No Watermark)</span>
+									</div>
+									<span class="text-sm bg-white/20 px-2 py-1 rounded text-white group-hover:bg-white/30 transition">MP4</span>
+								</button>
+								<button class="w-full bg-black hover:bg-gray-800 text-white font-bold py-4 px-6 rounded-xl flex items-center justify-between transition shadow-md">
+									<div class="flex items-center gap-3">
+										<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
+										<span>Download Audio Only</span>
+									</div>
+									<span class="text-sm bg-white/20 px-2 py-1 rounded text-white">MP3</span>
+								</button>
+							</div>
+
+							<div class="mt-6 flex gap-3">
+								<button id="reset-btn" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-xl transition text-sm flex justify-center items-center gap-2">
+									<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+									Download another
+								</button>
+								<button class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold py-3 px-4 rounded-xl transition text-sm flex justify-center items-center gap-2">
+									<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+									Share Tool
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			
+			<!-- How to use section -->
+			<div class="max-w-4xl mx-auto mt-20 pt-10 border-t border-gray-200">
+				<h2 class="text-2xl font-bold text-gray-900 text-center mb-10">How to download from TikTok?</h2>
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+					<div class="text-center">
+						<div class="w-12 h-12 bg-red-100 text-red-500 rounded-full flex items-center justify-center font-bold text-xl mx-auto mb-4">1</div>
+						<h4 class="font-bold text-gray-900 mb-2">Copy link</h4>
+						<p class="text-gray-500 text-sm">Open the TikTok app or website, find the video and copy its URL via the Share button.</p>
+					</div>
+					<div class="text-center">
+						<div class="w-12 h-12 bg-red-100 text-red-500 rounded-full flex items-center justify-center font-bold text-xl mx-auto mb-4">2</div>
+						<h4 class="font-bold text-gray-900 mb-2">Paste link</h4>
+						<p class="text-gray-500 text-sm">Paste the copied URL into the input field above and hit the the Download button.</p>
+					</div>
+					<div class="text-center">
+						<div class="w-12 h-12 bg-red-100 text-red-500 rounded-full flex items-center justify-center font-bold text-xl mx-auto mb-4">3</div>
+						<h4 class="font-bold text-gray-900 mb-2">Download</h4>
+						<p class="text-gray-500 text-sm">Choose your preferred format (MP4 or MP3) and the download will start instantly.</p>
+					</div>
+				</div>
+			</div>
+		</main>
+
+		<!-- Footer -->
+		<footer class="border-t border-gray-200 bg-white mt-auto">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row items-center justify-between">
+				<p class="text-gray-500 text-sm mb-4 md:mb-0">
+					© 2026 KiraDownloader. Fast, Secure, and Free.
+				</p>
+				<div class="flex space-x-6 text-sm">
+					<a href="#" class="text-gray-500 hover:text-gray-900 transition font-medium">Terms</a>
+					<a href="#" class="text-gray-500 hover:text-gray-900 transition font-medium">Privacy</a>
+					<a href="#" class="text-gray-500 hover:text-gray-900 transition font-medium">Contact</a>
+				</div>
+			</div>
+		</footer>
+
+		<!-- Simple Script to handle UI states -->
+		<script>
+			const form = document.getElementById('download-form');
+			const inputState = document.getElementById('input-state');
+			const loadingState = document.getElementById('loading-state');
+			const resultState = document.getElementById('result-state');
+			const resetBtn = document.getElementById('reset-btn');
+			const urlInput = document.getElementById('url-input') as HTMLInputElement;
+
+			form?.addEventListener('submit', (e) => {
+				e.preventDefault();
+				if(!urlInput.value) return;
+
+				// Hide input, show loading
+				inputState?.classList.add('hidden');
+				loadingState?.classList.remove('hidden');
+
+				// Simulate API Call duration (2 seconds)
+				setTimeout(() => {
+					loadingState?.classList.add('hidden');
+					resultState?.classList.remove('hidden');
+				}, 2000);
+			});
+
+			resetBtn?.addEventListener('click', () => {
+				// Reset all to initial state
+				urlInput.value = '';
+				resultState?.classList.add('hidden');
+				inputState?.classList.remove('hidden');
+			});
+		</script>
+	</body>
+</html>
