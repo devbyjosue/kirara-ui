@@ -2,6 +2,7 @@
 // index.astro
 import "../styles/global.css";
 import SocialCard from "../components/SocialCard.astro";
+import DownloaderForm from "../components/DownloaderForm.astro";
 import { platforms } from "../data/platforms";
 ---
 
@@ -41,11 +42,16 @@ import { platforms } from "../data/platforms";
 				Our suite of download tools will help you save videos and images from any platform entirely for free. No registrations or limits.
 			</p>
 
-			<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-				{platforms.map((platform) => (
-					<SocialCard platform={platform} />
-				))}
-			</div>
+			<DownloaderForm />
+
+            <div class="mt-20">
+                <h2 class="text-2xl font-bold text-gray-900 text-center mb-8">Popular Supported Platforms</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
+                    {platforms.slice(0, 5).map((platform) => (
+                        <SocialCard platform={platform} />
+                    ))}
+                </div>
+            </div>
 		</main>
 
 		<footer class="border-t border-gray-200 bg-white mt-auto">

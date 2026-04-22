@@ -1,0 +1,208 @@
+---
+// src/components/DownloaderForm.astro
+const { platform } = Astro.props;
+
+const platformName = platform?.shortName || "";
+const platformId = platform?.id || "universal";
+const placeholderText = platform ? `Paste ${platformName} video link here...` : "Paste video or image link here...";
+const loadingText = platform ? `Please wait, extracting media sources from ${platformName}.` : "Please wait, extracting media sources from your link.";
+const successText = platform ? `Awesome ${platformName} media` : "Awesome media";
+---
+
+<div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl border border-gray-100 p-6 md:p-10 relative overflow-hidden mt-10">
+    <div id="input-state" class="transition-all duration-500">
+        <form id="download-form" data-platform={platformId} class="flex flex-col md:flex-row gap-4 w-full relative">
+            <div class="relative grow">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                    </svg>
+                </div>
+                <input 
+                    type="url" 
+                    id="url-input"
+                    placeholder={placeholderText} 
+                    required
+                    class="block w-full pl-12 pr-24 py-5 text-lg rounded-xl border-2 border-gray-200 focus:border-red-500 focus:ring-0 focus:outline-none transition-colors bg-gray-50 text-gray-900 font-medium placeholder-gray-400"
+                >
+                <button id="paste-btn" type="button" class="absolute inset-y-2 right-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold rounded-lg transition-colors flex items-center gap-2 text-sm z-10">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                    Paste
+                </button>
+            </div>
+            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-10 py-5 rounded-xl text-lg font-bold shadow-lg shadow-red-200 transition flex items-center justify-center gap-2 group w-full md:w-auto shrink-0">
+                <span>Download</span>
+                <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
+        </form>
+        <p class="text-sm text-gray-400 mt-4 text-center">By using our service you accept our Terms of Service.</p>
+    </div>
+
+    <div id="loading-state" class="hidden flex flex-col items-center justify-center py-12 transition-all duration-500">
+        <div class="relative w-24 h-24">
+            <svg class="animate-spin w-full h-full text-gray-200" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="8"></circle>
+            </svg>
+            <svg class="animate-spin w-full h-full text-red-500 absolute top-0 left-0" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="8" stroke-dasharray="283" stroke-dashoffset="210" stroke-linecap="round"></circle>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center text-red-500">
+                <svg class="w-8 h-8 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                </svg>
+            </div>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-900 mt-6">Processing your link...</h3>
+        <p class="text-gray-500 mt-2 font-medium">{loadingText}</p>
+    </div>
+
+    <div id="result-state" class="hidden animate-fade-in transition-all duration-500">
+        <div class="flex flex-col md:flex-row gap-8 bg-gray-50 p-6 rounded-2xl border border-gray-100">
+
+            <div class="w-full md:w-1/3 aspect-9/16 md:aspect-square bg-gray-200 rounded-xl overflow-hidden relative shadow-inner">
+                <video id="thumbnail" class="w-full h-full object-cover" controls loop></video>
+                <div class="absolute inset-0 bg-black/20 flex items-center justify-center pointer-events-none">
+                    <div class="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center pl-1 shadow-lg pointer-events-auto cursor-pointer hover:scale-105 transition">
+                        <svg class="w-6 h-6 text-black" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full md:w-2/3 flex flex-col justify-center">
+                <h3 class="text-xl font-bold text-gray-900 mb-2 truncate">{successText}</h3>
+                <p class="text-sm text-gray-500 mb-6 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                    Ready to download
+                </p>
+
+                <div class="space-y-3">
+                    <button class="w-full bg-[#EA4335] hover:bg-[#d9382b] text-white font-bold py-4 px-6 rounded-xl flex items-center justify-between transition group shadow-md shadow-red-100">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2v8a2 2 0 002 2z"></path></svg>
+                            <span>Download File</span>
+                        </div>
+                        <span class="text-sm bg-white/20 px-2 py-1 rounded text-white group-hover:bg-white/30 transition">MP4</span>
+                    </button>
+                    <button class="w-full bg-black hover:bg-gray-800 text-white font-bold py-4 px-6 rounded-xl flex items-center justify-between transition shadow-md">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
+                            <span>Download Audio Only</span>
+                        </div>
+                        <span class="text-sm bg-white/20 px-2 py-1 rounded text-white">MP3</span>
+                    </button>
+                </div>
+
+                <div class="mt-6 flex gap-3">
+                    <button id="reset-btn" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-xl transition text-sm flex justify-center items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        Download another
+                    </button>
+                    <button class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold py-3 px-4 rounded-xl transition text-sm flex justify-center items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                        Share Tool
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById('download-form');
+    const inputState = document.getElementById('input-state');
+    const loadingState = document.getElementById('loading-state');
+    const resultState = document.getElementById('result-state');
+    const resetBtn = document.getElementById('reset-btn');
+    const urlInput = document.getElementById('url-input') as HTMLInputElement;
+    const pasteBtn = document.getElementById('paste-btn');
+
+    form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if(!urlInput.value) return;
+
+        inputState?.classList.add('hidden');
+        loadingState?.classList.remove('hidden');
+
+        const metadata = {
+            userAgent: navigator.userAgent,
+            language: navigator.language,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            screenWidth: window.screen.width,
+            screenHeight: window.screen.height,
+            referrer: document.referrer,
+            timestamp: new Date().toISOString()
+        };
+
+        const platformId = form.dataset.platform; 
+        const payload = {
+            url: urlInput.value,
+            platform: platformId,
+            metadata: metadata
+        };
+
+        try {
+            const response = await fetch('http://localhost:8000/download', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error(`API Error: ${response.status}`);
+            }
+
+            const blob = await response.blob();
+            
+            const downloadUrl = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            
+            const disposition = response.headers.get('Content-Disposition');
+            let filename = 'downloaded_media.mp4';
+            if (disposition && disposition.indexOf('filename=') !== -1) {
+                const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                const matches = filenameRegex.exec(disposition);
+                if (matches != null && matches[1]) {
+                    filename = matches[1].replace(/['"]/g, '');
+                }
+            }
+
+            const thumbnailUrl = URL.createObjectURL(blob);
+            const thumbnailImg = document.getElementById('thumbnail') as HTMLImageElement;
+            if (thumbnailImg) thumbnailImg.src = thumbnailUrl;
+            
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            
+            window.URL.revokeObjectURL(downloadUrl);
+            a.remove();
+
+            loadingState?.classList.add('hidden');
+            resultState?.classList.remove('hidden');
+
+        } catch (error) {
+            console.error("Failed to fetch download data:", error);
+            alert("There was an error communicating with the server. Please try again.");
+            loadingState?.classList.add('hidden');
+            inputState?.classList.remove('hidden');
+        }
+    });
+
+    resetBtn?.addEventListener('click', () => {
+        if (urlInput) urlInput.value = '';
+        resultState?.classList.add('hidden');
+        inputState?.classList.remove('hidden');
+    });
+
+    pasteBtn?.addEventListener('click', async () => {
+        try {
+            const text = await navigator.clipboard.readText();
+            if (urlInput) urlInput.value = text;
+        } catch (err) {
+            console.error('Failed to read clipboard contents: ', err);
+        }
+    });
+</script>
