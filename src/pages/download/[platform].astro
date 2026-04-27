@@ -12,15 +12,6 @@ export function getStaticPaths() {
 }
 
 const { platform } = Astro.props;
-
-// Mock data for popular downloads
-const popularDownloads = [
-  { title: "Trending Dance Challenge", downloads: "1.2M", thumbnail: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=300&q=80", duration: "0:15" },
-  { title: "Funny Cat Compilation", downloads: "850K", thumbnail: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=300&q=80", duration: "3:42" },
-  { title: "Quick Recipe Tutorial", downloads: "2.4M", thumbnail: "https://images.unsplash.com/photo-1466637574441-749b8f19452f?auto=format&fit=crop&w=300&q=80", duration: "1:00" },
-  { title: "Travel Vlog Highlight", downloads: "500K", thumbnail: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=300&q=80", duration: "5:20" },
-  { title: "Life Hack #42", downloads: "3.1M", thumbnail: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=300&q=80", duration: "0:45" }
-];
 ---
 
 <html lang="en">
@@ -62,26 +53,9 @@ const popularDownloads = [
 			<DownloaderForm platform={platform} />
 			
 			<div class="max-w-7xl mx-auto mt-20 pt-10 border-t border-gray-200">
-				<h2 class="text-2xl font-bold text-gray-900 text-center mb-10">Trending on {platform.shortName}</h2>
-				<div class="flex overflow-x-auto pb-8 gap-6 snap-x hide-scrollbar">
-					{popularDownloads.map((item) => (
-						<div class="min-w-[250px] bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden snap-center group cursor-pointer hover:shadow-md transition">
-							<div class="relative aspect-[9/16] bg-gray-200">
-								<img src={item.thumbnail} alt={item.title} class="w-full h-full object-cover" />
-								<div class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-md font-medium">{item.duration}</div>
-								<div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition flex items-center justify-center">
-									<div class="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center pl-1 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity transform scale-75 group-hover:scale-100">
-										<svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-									</div>
-								</div>
-							</div>
-							<div class="p-4">
-								<h4 class="font-bold text-gray-900 mb-1 truncate">{item.title}</h4>
-								<p class="text-xs text-gray-500">{item.downloads} downloads</p>
-							</div>
-						</div>
-					))}
-				</div>
+				<h2 class="text-2xl font-bold text-gray-900 text-center mb-10">Latest Downloads on {platform.shortName}</h2>
+				<div id="recent-downloads" class="flex overflow-x-auto pb-8 gap-6 snap-x hide-scrollbar"></div>
+				<p id="recent-downloads-status" class="text-center text-sm text-gray-500">Loading recent downloads...</p>
 			</div>
 
 			<div class="max-w-4xl mx-auto mt-10 pt-10 border-t border-gray-200">
@@ -119,6 +93,97 @@ const popularDownloads = [
 			</div>
 		</footer>
 
-		
+		<script is:inline define:vars={{ platformId: platform.id }}>
+			const recentDownloadsContainer = document.getElementById("recent-downloads");
+			const recentDownloadsStatus = document.getElementById("recent-downloads-status");
+			const normalizedPlatform = platformId === "twitter" ? "x" : platformId;
+
+			function escapeHtml(value) {
+				return String(value)
+					.replace(/&/g, "&amp;")
+					.replace(/</g, "&lt;")
+					.replace(/>/g, "&gt;")
+					.replace(/\"/g, "&quot;")
+					.replace(/'/g, "&#39;");
+			}
+
+			function formatDate(value) {
+				if (!value) return "Unknown date";
+				const date = new Date(value);
+				if (Number.isNaN(date.getTime())) return "Unknown date";
+				return date.toLocaleString();
+			}
+
+			function renderDownloads(downloads) {
+				if (!recentDownloadsContainer || !recentDownloadsStatus) return;
+
+				if (!downloads.length) {
+					recentDownloadsContainer.innerHTML = "";
+					recentDownloadsStatus.textContent = "No downloads yet for this platform.";
+					return;
+				}
+
+				recentDownloadsStatus.textContent = "";
+				recentDownloadsContainer.innerHTML = downloads
+					.map((item) => {
+						const title = escapeHtml(item.title || item.name || "Untitled download");
+						const count = Number(item.download_count) || 1;
+						const mediaKind = item.file_type === "image" ? "Image" : "Video";
+						const formatLabel = escapeHtml((item.file_format || (item.file_type === "image" ? "jpg" : "mp4")).toUpperCase());
+						const downloadedAt = escapeHtml(formatDate(item.downloaded_at));
+						const sourceUrl = escapeHtml(item.url || "#");
+
+						return `
+							<a href="${sourceUrl}" target="_blank" rel="noopener noreferrer" class="min-w-[250px] bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden snap-center group hover:shadow-md transition">
+								<div class="relative aspect-[9/16] bg-gradient-to-br from-gray-50 to-gray-200 flex items-center justify-center">
+									<div class="text-center px-4">
+										<p class="text-xs font-semibold tracking-wide text-gray-500 uppercase">${escapeHtml(mediaKind)}</p>
+										<p class="text-sm font-medium text-gray-700 mt-1">${formatLabel}</p>
+									</div>
+								</div>
+								<div class="p-4">
+									<h4 class="font-bold text-gray-900 mb-1 truncate">${title}</h4>
+									<p class="text-xs text-gray-500">${count} total downloads</p>
+									<p class="text-xs text-gray-400 mt-2">${downloadedAt}</p>
+								</div>
+							</a>
+						`;
+					})
+					.join("");
+			}
+
+			async function loadRecentDownloads() {
+				if (!recentDownloadsStatus) return;
+				recentDownloadsStatus.textContent = "Loading recent downloads...";
+
+				try {
+					const response = await fetch(`http://localhost:8000/downloads?platform=${encodeURIComponent(normalizedPlatform)}&limit=10`);
+					if (!response.ok) {
+						throw new Error(`Failed with status ${response.status}`);
+					}
+
+					const payload = await response.json();
+					const downloads = Array.isArray(payload.downloads) ? payload.downloads : [];
+					renderDownloads(downloads);
+				} catch (error) {
+					if (recentDownloadsContainer) {
+						recentDownloadsContainer.innerHTML = "";
+					}
+					recentDownloadsStatus.textContent = "Could not load recent downloads right now.";
+					console.error("Failed to load recent downloads:", error);
+				}
+			}
+
+			window.addEventListener("kirara:download-success", (event) => {
+				const detail = event.detail || {};
+				const eventPlatform = detail.platform === "twitter" ? "x" : detail.platform;
+				if (eventPlatform !== normalizedPlatform) {
+					return;
+				}
+				void loadRecentDownloads();
+			});
+
+			void loadRecentDownloads();
+		</script>
 	</body>
 </html>

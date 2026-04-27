@@ -38,7 +38,7 @@ const successText = platform ? `Awesome ${platformName} media` : "Awesome media"
         <p class="text-sm text-gray-400 mt-4 text-center">By using our service you accept our Terms of Service.</p>
     </div>
 
-    <div id="loading-state" class="hidden flex flex-col items-center justify-center py-12 transition-all duration-500">
+    <div id="loading-state" class="hidden flex-col items-center justify-center py-12 transition-all duration-500">
         <div class="relative w-24 h-24">
             <svg class="animate-spin w-full h-full text-gray-200" viewBox="0 0 100 100">
                 <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="8"></circle>
@@ -122,6 +122,7 @@ const successText = platform ? `Awesome ${platformName} media` : "Awesome media"
 
         inputState?.classList.add('hidden');
         loadingState?.classList.remove('hidden');
+        loadingState?.classList.add('flex');
 
         const metadata = {
             userAgent: navigator.userAgent,
@@ -170,8 +171,8 @@ const successText = platform ? `Awesome ${platformName} media` : "Awesome media"
             }
 
             const thumbnailUrl = URL.createObjectURL(blob);
-            const thumbnailImg = document.getElementById('thumbnail') as HTMLImageElement;
-            if (thumbnailImg) thumbnailImg.src = thumbnailUrl;
+            const thumbnailVideo = document.getElementById('thumbnail') as HTMLVideoElement;
+            if (thumbnailVideo) thumbnailVideo.src = thumbnailUrl;
             
             a.download = filename;
             document.body.appendChild(a);
@@ -181,12 +182,23 @@ const successText = platform ? `Awesome ${platformName} media` : "Awesome media"
             a.remove();
 
             loadingState?.classList.add('hidden');
+            loadingState?.classList.remove('flex');
             resultState?.classList.remove('hidden');
+
+            window.dispatchEvent(
+                new CustomEvent('kirara:download-success', {
+                    detail: {
+                        platform: platformId,
+                        url: urlInput.value,
+                    },
+                })
+            );
 
         } catch (error) {
             console.error("Failed to fetch download data:", error);
             alert("There was an error communicating with the server. Please try again.");
             loadingState?.classList.add('hidden');
+            loadingState?.classList.remove('flex');
             inputState?.classList.remove('hidden');
         }
     });
