@@ -133,20 +133,35 @@ const { platform } = Astro.props;
 						const downloadedAt = escapeHtml(formatDate(item.downloaded_at));
 						const sourceUrl = escapeHtml(item.url || "#");
 
+						const previewContent = item.file_type === "video" 
+							? `<video src="${sourceUrl}" preload="metadata" class="absolute inset-0 w-full h-full object-cover" muted loop playsinline onmouseover="this.play()" onmouseout="this.pause()" title="Video preview">
+							<source src="${sourceUrl}" type="${item.file_type === "image" ? `image/${item.file_format || "jpeg"}` : `video/${item.file_format || "mp4"}`}">
+								</video>`
+							: `<div class="text-center px-4 z-10 relative">
+									<p class="text-xs font-semibold tracking-wide text-gray-500 uppercase">${escapeHtml(mediaKind)}</p>
+									<p class="text-sm font-medium text-gray-700 mt-1">${formatLabel}</p>
+								</div>`;
+
 						return `
-							<a href="${sourceUrl}" target="_blank" rel="noopener noreferrer" class="min-w-[250px] bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden snap-center group hover:shadow-md transition">
-								<div class="relative aspect-[9/16] bg-gradient-to-br from-gray-50 to-gray-200 flex items-center justify-center">
-									<div class="text-center px-4">
-										<p class="text-xs font-semibold tracking-wide text-gray-500 uppercase">${escapeHtml(mediaKind)}</p>
-										<p class="text-sm font-medium text-gray-700 mt-1">${formatLabel}</p>
+							<div class="min-w-[250px] bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden snap-center group hover:shadow-md transition flex flex-col relative">
+								<a href="${sourceUrl}" target="_blank" rel="noopener noreferrer" class="relative aspect-[9/16] bg-gradient-to-br from-gray-50 to-gray-200 flex items-center justify-center overflow-hidden block">
+									${previewContent}
+								</a>
+								<div class="p-4 flex flex-col grow">
+									<h4 class="font-bold text-gray-900 mb-1 truncate" title="${title}">${title}</h4>
+									<div class="flex items-center justify-between mt-auto">
+										<div>
+											<p class="text-xs text-gray-500">${count} total downloads</p>
+											<p class="text-xs text-gray-400 mt-1">${downloadedAt}</p>
+										</div>
+										<button type="button" data-url="${sourceUrl}" class="quick-download-btn text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 p-2.5 rounded-full transition" title="Download">
+											<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+											</svg>
+										</button>
 									</div>
 								</div>
-								<div class="p-4">
-									<h4 class="font-bold text-gray-900 mb-1 truncate">${title}</h4>
-									<p class="text-xs text-gray-500">${count} total downloads</p>
-									<p class="text-xs text-gray-400 mt-2">${downloadedAt}</p>
-								</div>
-							</a>
+							</div>
 						`;
 					})
 					.join("");
@@ -182,6 +197,24 @@ const { platform } = Astro.props;
 				}
 				void loadRecentDownloads();
 			});
+
+			if (recentDownloadsContainer) {
+				recentDownloadsContainer.addEventListener("click", (e) => {
+					const btn = e.target.closest('.quick-download-btn');
+					if (!btn) return;
+					e.preventDefault();
+					const url = btn.getAttribute('data-url');
+					if (url) {
+						const urlInput = document.getElementById('url-input');
+						const form = document.getElementById('download-form');
+						if (urlInput && form) {
+							urlInput.value = url;
+							form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+							window.scrollTo({ top: 0, behavior: 'smooth' });
+						}
+					}
+				});
+			}
 
 			void loadRecentDownloads();
 		</script>
